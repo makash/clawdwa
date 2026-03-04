@@ -1,95 +1,77 @@
-# whatsapp-claudecode
+# clawdwa
 
-Send WhatsApp messages to Claude Code and get responses — in any WhatsApp group.
+Use Claude AI directly from WhatsApp — no app, no signup. Just message a group.
 
 ## How it works
 
+One person (the admin) sets this up on a Linux machine. Everyone else just sends messages in a WhatsApp group as usual.
+
 ```
-WhatsApp group member sends "! your question"
-  → bot picks it up via whatsapp-cli
-  → pipes it to Claude Code CLI
-  → replies in the group
+Group member sends:  "! what is a binary search tree?"
+Bot replies:         "A binary search tree is..."
+
+Group member sends:  "@claude write a bash script to rename files"
+Bot replies:         "Here's a bash script..."
 ```
 
-Triggers: messages starting with `!` or `@claude`
+## For group members
 
-## Requirements
+Nothing to install. Just join the WhatsApp group and send messages starting with `!` or `@claude`.
 
-- Linux (tested on Ubuntu)
-- Claude Code CLI (`claude`) — authenticated
-- [mise](https://mise.run) for Go installation
-- A WhatsApp account
+## For the admin (one-time setup)
 
-## Install
+**Requirements:**
+- Linux machine (always-on, e.g. a VPS or home server)
+- [Claude Code](https://claude.ai/code) installed and authenticated
+- [mise](https://mise.run) for installing Go and whatsapp-cli
+
+**Install:**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/whatsapp-claudecode
-cd whatsapp-claudecode
-
-# Install mise (if not already)
+# Install mise
 curl https://mise.run | sh
 eval "$(~/.local/bin/mise activate bash)"
 
-# Install whatsapp-cli
+# Install Go and whatsapp-cli
 mise use --global go@latest
 go install github.com/vicentereig/whatsapp-cli@latest
-```
 
-## Setup (run once)
-
-```bash
+# Clone and set up
+git clone https://github.com/makash/clawdwa
+cd clawdwa
 bash setup.sh
 ```
 
-This will:
-1. Authenticate your WhatsApp account (QR code scan)
-2. Let you pick which group to use
-3. Ask for your phone number (to filter bot's own messages)
-4. Write `store/config.sh` and initialize the database
+`setup.sh` will:
+1. Scan a QR code to link your WhatsApp account
+2. Let you pick which group the bot listens to
+3. Ask for your phone number (so the bot ignores its own messages)
 
-## Run
+**Run:**
 
 ```bash
 bash bot.sh
 ```
 
-That's it. The bot manages sync internally — no second terminal needed.
+That's it. Leave it running. The bot manages everything internally.
 
-## Usage
-
-In your configured WhatsApp group:
-
-```
-! what is a binary search tree?
-@claude write a python script to rename files
-```
-
-## Change group
+**Change the group later:**
 
 ```bash
-# Stop the bot first (Ctrl+C), then:
+# Stop the bot (Ctrl+C), then:
 bash setup.sh
 bash bot.sh
 ```
 
-## Claude Code Skill
+## Optional: Claude Code skill
 
-If you use Claude Code, install the skill for easy management:
+If you use Claude Code, copy the skill for `/whatsapp-bot` shortcuts:
 
 ```bash
 cp whatsapp-bot.md ~/.claude/skills/whatsapp-bot.md
 ```
 
-Then use `/whatsapp-bot start`, `/whatsapp-bot stop`, `/whatsapp-bot status`, `/whatsapp-bot change-group`.
-
-## Files
-
-```
-bot.sh        — main bot (run this)
-setup.sh      — first-time setup wizard
-sync.sh       — standalone sync (optional, bot.sh handles this)
-store/        — WhatsApp session + message DB (gitignored)
-```
+Then use `/whatsapp-bot status`, `/whatsapp-bot stop`, etc.
 
 ## Built with
 
