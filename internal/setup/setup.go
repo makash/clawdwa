@@ -21,9 +21,8 @@ func Run() error {
 
 	fmt.Println("=== clawdwa setup ===")
 	fmt.Println()
-
-	// Step 1: Connect to WhatsApp (shows QR if not authenticated).
 	fmt.Println("Connecting to WhatsApp...")
+
 	client, err := wa.New()
 	if err != nil {
 		return fmt.Errorf("create client: %w", err)
@@ -35,8 +34,6 @@ func Run() error {
 		return fmt.Errorf("connect: %w", err)
 	}
 	fmt.Println("✓ Connected to WhatsApp")
-
-	// Wait for initial sync so the group list is populated.
 	fmt.Print("Syncing chats (5s)...")
 	time.Sleep(5 * time.Second)
 	fmt.Println(" done")
