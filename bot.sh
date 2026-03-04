@@ -3,7 +3,7 @@
 # Usage: bash bot.sh
 # Requires: setup.sh to have been run first
 
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/store/config.sh"
@@ -100,10 +100,13 @@ main() {
   log "Polling every ${POLL_INTERVAL}s for messages prefixed with ! or @claude ..."
 
   while true; do
-    while IFS=$'\t' read -r id sender content; do
+    while IFS= read -r json_line; do
+      id=$(echo "$json_line"     | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); print(d['id'])")
+      sender=$(echo "$json_line" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); print(d['sender'])")
+      content=$(echo "$json_line"| python3 -c "import sys,json; d=json.loads(sys.stdin.read()); print(d['content'])")
       process_message "$id" "$sender" "$content"
     done < <(python3 - "$STORE_DIR/messages.db" "$GROUP_JID" "$BOT_JID" << 'PYEOF'
-import sqlite3, sys
+import sqlite3, sys, json
 
 db_path, group_jid, bot_jid = sys.argv[1], sys.argv[2], sys.argv[3]
 bot_num = bot_jid.split("@")[0]
@@ -119,11 +122,10 @@ try:
         ORDER BY timestamp ASC
     """, (group_jid, bot_num))
     for row in cur.fetchall():
-        print(f"{row[0]}\t{row[1]}\t{row[2]}")
+        print(json.dumps({"id": row[0], "sender": row[1], "content": row[2]}))
     con.close()
 except Exception as e:
-    import sys as _sys
-    print(f"DB error: {e}", file=_sys.stderr)
+    print(f"DB error: {e}", file=sys.stderr)
 PYEOF
 )
     sleep "$POLL_INTERVAL"

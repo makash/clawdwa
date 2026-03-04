@@ -55,26 +55,31 @@ wait $SYNC_PID 2>/dev/null || true
 
 # Step 3: List groups and let user pick
 echo ""
-echo "Available WhatsApp groups:"
-echo ""
+read -rp "Search for a group by name (or press Enter to list all): " group_search
 
-groups_json=$("$WA_BIN" --store "$STORE_DIR" chats list --limit 50 2>/dev/null)
+groups_json=$("$WA_BIN" --store "$STORE_DIR" chats list --limit 200 2>/dev/null)
 mapfile -t group_jids < <(echo "$groups_json" | python3 -c "
 import sys, json
 data = json.loads(sys.stdin.read())
 chats = data.get('data', []) if isinstance(data, dict) else data
-groups = [c for c in chats if '@g.us' in c.get('jid','')]
-for i, g in enumerate(groups, 1):
+search = sys.argv[1].lower() if len(sys.argv) > 1 else ''
+groups = [c for c in chats if '@g.us' in c.get('jid','') and (not search or search in c.get('name','').lower())]
+for g in groups:
     print(g['jid'])
-")
+" "$group_search")
 mapfile -t group_names < <(echo "$groups_json" | python3 -c "
 import sys, json
 data = json.loads(sys.stdin.read())
 chats = data.get('data', []) if isinstance(data, dict) else data
-groups = [c for c in chats if '@g.us' in c.get('jid','')]
+search = sys.argv[1].lower() if len(sys.argv) > 1 else ''
+groups = [c for c in chats if '@g.us' in c.get('jid','') and (not search or search in c.get('name','').lower())]
 for i, g in enumerate(groups, 1):
     print(f\"{i}. {g.get('name', g['jid'])}\")
-")
+" "$group_search")
+
+echo ""
+echo "Matching WhatsApp groups:"
+echo ""
 
 if [[ ${#group_jids[@]} -eq 0 ]]; then
   echo "No groups found. Create a WhatsApp group first, then re-run setup."
