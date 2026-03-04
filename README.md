@@ -55,24 +55,6 @@ clawdwa status    Show bot status
 clawdwa stop      Stop the bot
 ```
 
-## For the admin — bash scripts (legacy)
-
-**Requirements:**
-- Linux machine (always-on, e.g. a VPS or home server)
-- [Claude Code](https://claude.ai/code) installed and authenticated
-- [mise](https://mise.run) for installing Go and whatsapp-cli
-
-```bash
-curl https://mise.run | sh
-eval "$(~/.local/bin/mise activate bash)"
-mise use --global go@latest
-go install github.com/vicentereig/whatsapp-cli@latest
-
-git clone https://github.com/makash/clawdwa
-cd clawdwa
-bash setup.sh
-bash bot.sh
-```
 
 ## Agent-native output (Claude Code skill)
 
