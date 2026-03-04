@@ -1,0 +1,108 @@
+#!/usr/bin/expect -f
+# Fully scripted demo of clawdwa setup — no real binary needed.
+
+proc slow_print {text {delay 0.03}} {
+    foreach char [split $text ""] {
+        puts -nonewline $char
+        flush stdout
+        after [expr {int($delay * 1000)}]
+    }
+    puts ""
+}
+
+proc prompt_type {prompt response {delay 0.06}} {
+    puts -nonewline $prompt
+    flush stdout
+    after 800
+    foreach char [split $response ""] {
+        puts -nonewline $char
+        flush stdout
+        after [expr {int($delay * 1000)}]
+    }
+    puts ""
+}
+
+# Download
+slow_print "\$ curl -L https://github.com/makash/clawdwa/releases/latest/download/clawdwa_linux_amd64 -o clawdwa" 0.02
+after 500
+puts "  % Total    % Received  Transfered    Speed"
+after 200
+puts "100 27.4M  100 27.4M    0     0  4823k      0  0:00:05  0:00:05 --:--:-- 5102k"
+after 600
+
+slow_print "\$ chmod +x clawdwa" 0.04
+after 400
+
+slow_print "\$ ./clawdwa setup" 0.04
+after 800
+
+puts ""
+puts "=== clawdwa setup ==="
+puts ""
+after 500
+puts "Connecting to WhatsApp..."
+after 1200
+
+# QR code (encodes https://clawdwa.com)
+puts "Scan this QR code with WhatsApp to link your account:"
+puts "(WhatsApp → Settings → Linked Devices → Link a Device)"
+puts ""
+puts "█████████████████████████████████"
+puts "█████████████████████████████████"
+puts "████ ▄▄▄▄▄ ██▄▀▀ ▄  ▀█ ▄▄▄▄▄ ████"
+puts "████ █   █ █▄  ▀▄█▀ ▄█ █   █ ████"
+puts "████ █▄▄▄█ ██▀▄██   ██ █▄▄▄█ ████"
+puts "████▄▄▄▄▄▄▄█ ▀ █ ▀ █ █▄▄▄▄▄▄▄████"
+puts "████   █ ▄▄ ▄█  ██▄▄▄  ███▄█▀████"
+puts "████▄▄█▀▄▄▄ ▄▄█▀█▄█▀█ █ ██▄ ▄████"
+puts "█████▀██▀ ▄█▀██▀ ▀██   ██ █▄ ████"
+puts "████▄▀█▀▄ ▄█▄▀█▄ ▀ █▀█▄▄▀█▄ ▄████"
+puts "████▄██▄▄█▄█▀█▄ ██ █ ▄▄▄  █▀▀████"
+puts "████ ▄▄▄▄▄ █ ██▀█▄█▄ █▄█  █▄ ████"
+puts "████ █   █ █▄ ▄▀ ▀█▀▄▄▄   ▀█▄████"
+puts "████ █▄▄▄█ █ ▄▄▄ ▀   ▄██ ▀█▀▄████"
+puts "████▄▄▄▄▄▄▄█▄█▄▄██▄▄▄▄█▄███▄▄████"
+puts "█████████████████████████████████"
+puts ""
+
+after 4000
+puts "✓ Authenticated as Demo User"
+after 500
+puts -nonewline "Syncing chats (5s)..."
+flush stdout
+after 5000
+puts " done"
+puts ""
+
+prompt_type "Search groups by name (or press Enter to list all): " "clawdWA"
+after 600
+
+puts ""
+puts "Matching groups:"
+puts "  1. clawdWA"
+puts ""
+
+prompt_type "Enter group number: " "1"
+after 400
+puts "✓ Selected: clawdWA (120363406421398484@g.us)"
+puts ""
+
+prompt_type "Enter your WhatsApp number with country code (e.g. 919900000000): " "919900000000"
+after 300
+puts "✓ Bot JID: 919900000000@s.whatsapp.net"
+puts ""
+
+puts "✓ Claude binary: /usr/local/bin/claude"
+puts ""
+puts "✓ Config saved to ~/.config/clawdwa/config.json"
+puts ""
+
+puts ""
+puts "=== Setup complete! ==="
+puts ""
+puts "Bot will respond to messages in 'clawdWA' starting with:"
+puts "  !        e.g. \"! what is recursion?\""
+puts "  @claude  e.g. \"@claude write a bash script\""
+puts ""
+
+after 2000

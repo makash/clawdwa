@@ -1,0 +1,41 @@
+#!/usr/bin/expect -f
+# Fully scripted demo of clawdwa starting the bot.
+
+proc slow_print {text {delay 0.03}} {
+    foreach char [split $text ""] {
+        puts -nonewline $char
+        flush stdout
+        after [expr {int($delay * 1000)}]
+    }
+    puts ""
+}
+
+slow_print "\$ ./clawdwa" 0.05
+after 1000
+
+puts "✓ Bot running. Listening in group: clawdWA"
+puts "  Send '! your question' or '@claude your question' to trigger Claude."
+puts "  Press Ctrl+C to stop."
+puts ""
+
+after 3000
+
+puts "\[14:22:01\] from +919900112233: What is a binary search tree?"
+after 500
+puts "Calling Claude..."
+after 3000
+puts "Sending reply..."
+after 500
+puts ""
+puts "\[14:22:08\] from +919900445566: @claude write a hello world in Go"
+after 500
+puts "Calling Claude..."
+after 4000
+puts "Sending reply..."
+after 1000
+
+puts ""
+puts "^C"
+puts "Stopping bot..."
+
+after 1000
