@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/makash/clawdwa/internal/claude"
 	"github.com/makash/clawdwa/internal/config"
@@ -34,6 +35,11 @@ func Run() error {
 		return fmt.Errorf("connect: %w", err)
 	}
 	fmt.Println("✓ Connected to WhatsApp")
+
+	// Wait for initial sync so the group list is populated.
+	fmt.Print("Syncing chats (5s)...")
+	time.Sleep(5 * time.Second)
+	fmt.Println(" done")
 	fmt.Println()
 
 	// Step 2: List and pick a group.
