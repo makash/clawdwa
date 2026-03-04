@@ -2,48 +2,31 @@
 
 WhatsApp ↔ Claude. In both directions.
 
-## Setup
-
-![clawdwa setup](https://raw.githubusercontent.com/makash/clawdwa/master/demo/setup.gif)
-
-## Running
-
-![clawdwa running](https://raw.githubusercontent.com/makash/clawdwa/master/demo/start.gif)
-
-Send messages from WhatsApp to get Claude's help. Or tell Claude to notify your group when a task completes — from the terminal.
-
 ```
 Group member sends:  "! what is a binary search tree?"
 Bot replies:         "A binary search tree is..."
 
+You tell Claude:     "Deploy and notify the group when done."
 Claude sends:        clawdwa send "✅ Deploy finished. All checks passed."
-Group receives:      "✅ Deploy finished. All checks passed."
 ```
 
-## How it works
+---
 
-One person (the admin) sets this up on a Linux machine. Everyone else just sends messages in a WhatsApp group as usual.
+## For the admin
 
-## For group members
-
-Nothing to install. Join the WhatsApp group and send messages starting with `!` or `@claude`.
-
-## For the admin — Go binary (recommended)
-
-Download the binary for your platform from [GitHub Releases](https://github.com/makash/clawdwa/releases), then:
+**Requirements:** [Claude Code](https://claude.ai/code) installed and authenticated on a Linux or macOS machine.
 
 ```bash
+curl -fsSL https://github.com/makash/clawdwa/releases/latest/download/clawdwa_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') -o clawdwa
 chmod +x clawdwa
 ./clawdwa
 ```
 
-That's it. On first run, clawdwa will:
-1. Show a QR code to link your WhatsApp account
+On first run, clawdwa will:
+1. Show a QR code — scan with WhatsApp to link your account
 2. Let you pick which group the bot listens to
-3. Ask for your phone number
+3. Ask for your phone number (so the bot ignores its own messages)
 4. Optionally install itself as a systemd service
-
-**Requirements:** [Claude Code](https://claude.ai/code) installed and authenticated.
 
 ### Subcommands
 
@@ -55,23 +38,45 @@ clawdwa status    Show bot status
 clawdwa stop      Stop the bot
 ```
 
+---
 
-## Agent-native output (Claude Code skill)
+## For group members
 
-Install the skill to let Claude proactively send WhatsApp messages:
+Nothing to install. Just send messages in the WhatsApp group starting with `!` or `@claude`.
+
+---
+
+## Claude Code skill (admin only)
+
+Install the skill so Claude can proactively message your group:
 
 ```bash
 cp whatsapp-bot.md ~/.claude/skills/whatsapp-bot.md
 ```
 
-Then Claude can:
+Then in any Claude Code session:
+
 ```
-Run the deployment, and send me a WhatsApp when it's done.
+Run the deployment, and send a WhatsApp when it's done.
 ```
 
-Claude will send `clawdwa send "✅ Deployment complete"` to your group automatically.
+Claude will call `clawdwa send "✅ Deployment complete"` automatically.
 
-Use `/whatsapp-bot status`, `/whatsapp-bot stop`, etc. in Claude Code.
+Also gives you `/whatsapp-bot status`, `/whatsapp-bot stop`, and `/whatsapp-bot send` shortcuts in Claude Code.
+
+---
+
+## Demo
+
+**Setup**
+
+![clawdwa setup](https://raw.githubusercontent.com/makash/clawdwa/master/demo/setup.gif)
+
+**Running**
+
+![clawdwa running](https://raw.githubusercontent.com/makash/clawdwa/master/demo/start.gif)
+
+---
 
 ## Built with
 
