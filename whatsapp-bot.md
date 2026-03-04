@@ -70,20 +70,19 @@ tail -20 ~/whatsapp-claudecode/bot.log 2>/dev/null || echo "(no log file yet)"
 
 Send a message directly to the configured WhatsApp group. Useful for Claude to proactively notify users.
 
-Steps:
-1. Source the config to get GROUP_JID and WA_BIN:
-   ```bash
-   source ~/whatsapp-claudecode/store/config.sh
-   ```
-2. Send the message:
-   ```bash
-   "$WA_BIN" --store "$STORE_DIR" send --to "$GROUP_JID" --message "<your message here>"
-   ```
+```bash
+clawdwa send "<your message here>"
+```
 
 Example — Claude sending a proactive update:
 ```bash
+clawdwa send "✅ Task complete: the deployment finished successfully."
+```
+
+If clawdwa is not in PATH, use the full path or fall back to the bash method:
+```bash
 source ~/whatsapp-claudecode/store/config.sh
-"$WA_BIN" --store "$STORE_DIR" send --to "$GROUP_JID" --message "✅ Task complete: the deployment finished successfully."
+"$WA_BIN" --store "$STORE_DIR" send --to "$GROUP_JID" --message "<your message here>"
 ```
 
 ---
