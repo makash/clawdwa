@@ -2,6 +2,14 @@
 
 WhatsApp ↔ Claude. In both directions.
 
+## Setup
+
+![clawdwa setup](https://raw.githubusercontent.com/makash/clawdwa/master/demo/setup.gif)
+
+## Running
+
+![clawdwa running](https://raw.githubusercontent.com/makash/clawdwa/master/demo/start.gif)
+
 Send messages from WhatsApp to get Claude's help. Or tell Claude to notify your group when a task completes — from the terminal.
 
 ```
