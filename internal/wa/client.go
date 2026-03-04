@@ -33,9 +33,12 @@ func New() (*Client, error) {
 		return nil, fmt.Errorf("create config dir: %w", err)
 	}
 
-	db, err := sql.Open("sqlite", "file:"+path+"?_foreign_keys=on")
+	db, err := sql.Open("sqlite", "file:"+path)
 	if err != nil {
 		return nil, fmt.Errorf("open sqlite db: %w", err)
+	}
+	if _, err := db.Exec("PRAGMA foreign_keys = ON"); err != nil {
+		return nil, fmt.Errorf("enable foreign keys: %w", err)
 	}
 
 	container := sqlstore.NewWithDB(db, "sqlite3", waLog.Noop)
@@ -69,7 +72,7 @@ func (c *Client) Connect(ctx context.Context) error {
 
 		for evt := range qrChan {
 			if evt.Event == "code" {
-				qrterminal.Generate(evt.Code, qrterminal.L, os.Stdout)
+				qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 			} else {
 				fmt.Println("QR login event:", evt.Event)
 				if evt.Event == "success" {
